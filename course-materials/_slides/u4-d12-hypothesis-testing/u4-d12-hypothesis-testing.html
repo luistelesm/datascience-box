@@ -33,12 +33,7 @@ class: center, middle, inverse, title-slide
 
 
 layout: true
-  
-&lt;div class="my-footer"&gt;
-&lt;span&gt;
-&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt;
-&lt;/span&gt;
-&lt;/div&gt; 
+
 
 ---
 
@@ -281,7 +276,7 @@ null_dist &lt;- organ_donor %&gt;%
 ## 4         4 0.145
 ## 5         5 0.097
 ## 6         6 0.145
-## # … with 94 more rows
+## # ℹ 94 more rows
 ```
 
 
@@ -713,16 +708,15 @@ yawn %&gt;%
 - Calculate the sample statistic of interest (difference in propotions)
     - Since the explanatory variable is categorical, specify the order in which the subtraction should occur for the calculation of the sample statistic, `\((\hat{p}_{treatment} - \hat{p}_{control})\)`.
     
-
-```r
-*null_dist &lt;- yawn %&gt;% 
+````r
+{{null_dist &lt;- yawn %&gt;% }}
   specify(response = outcome, explanatory = group, 
           success = "yawn") %&gt;%
   hypothesize(null = "independence") %&gt;%
   generate(100, type = "permute") %&gt;%
   calculate(stat = "diff in props", 
             order = c("treatment", "control"))
-```
+````
 ]
 
 ---
@@ -742,7 +736,7 @@ ggplot(data = null_dist, mapping = aes(x = stat)) +
   labs(title = "Null distribution")
 ```
 
-&lt;img src="u4-d12-hypothesis-testing_files/figure-html/unnamed-chunk-24-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u4-d12-hypothesis-testing_files/figure-html/unnamed-chunk-23-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -754,7 +748,7 @@ simulations was the simulated difference in sample proportion at least as extrem
 as the observed difference in sample proportions?
 ]
 
-&lt;img src="u4-d12-hypothesis-testing_files/figure-html/unnamed-chunk-25-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u4-d12-hypothesis-testing_files/figure-html/unnamed-chunk-24-1.png" width="80%" style="display: block; margin: auto;" /&gt;
 
 ---
 

@@ -47,7 +47,7 @@
 .title-slide h1, h2, h3 {
   text-align: left;
   font-weight: bold;
-  font-family: Raleway;
+  /*font-family: Raleway;*/
 }
 
 .title-slide h2 {
@@ -190,7 +190,7 @@ div.my-footer a {
   padding-bottom: 3px;
   margin-bottom: 6px;
   margin-top: 6px;
-  color: white;
+  color: #002b36;/* white;*/
 }
 
 .question{
@@ -228,6 +228,7 @@ img, video, iframe {
 }
 
 /* Logo */
+/* 
 .remark-slide-content:after {
     content: "";
     position: absolute;
@@ -239,6 +240,7 @@ img, video, iframe {
     background-size: contain;
     background-image: url("dsbox-hex.png");
 }
+*/
 
 /* Media */
 @page { margin: 0; }
@@ -250,9 +252,15 @@ img, video, iframe {
     top: 0 !important;
     left: 0 !important;
   }
+  /* print incrementals*/
+  .has-continuation {
+    display: block !important;
+  }
 }
 
 /* Datatable headers */
 div.datatables {
     color: #fff;
 }
+
+

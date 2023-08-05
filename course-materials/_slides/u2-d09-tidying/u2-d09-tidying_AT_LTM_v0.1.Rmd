@@ -1,0 +1,232 @@
+---
+title: "Tidying data"
+subtitle: "<br><br> Data Science in a Box"
+author: "[datasciencebox.org](https://datasciencebox.org/)"
+output:
+  xaringan::moon_reader:
+    css: ["../xaringan-themer.css", "../slides.css"]
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(knitr)
+options(
+  dplyr.print_min = 10, 
+  dplyr.print_max = 10
+  )
+```
+
+## sales.xlsx
+
+```{r}
+
+clientes <- readxl::read_xlsx("sales_data/sales.xlsx", sheet = 'clientes')
+clientes
+```
+
+
+```{r}
+precos <- readxl::read_xlsx("sales_data/sales.xlsx", sheet = 'precos')
+precos
+
+```
+
+
+---
+
+## clientes
+
+
+
+<br>
+
+.pull-left[
+### .green[Temos...]
+```{r echo=FALSE}
+clientes
+```
+]
+
+--
+.pull-right[
+### .pink[Queremos...]
+```{r echo=FALSE}
+clientes %>%
+  pivot_longer(cols = item_1:item_3, names_to = "item_no", values_to = "item")
+```
+]
+
+
+---
+
+## O objetivo
+
+.center[
+```{r echo=FALSE, out.width="45%", out.extra ='style="background-color: #FDF6E3"'}
+include_graphics("img/tidyr-longer-wider.gif")
+```
+]
+
+---
+
+## Wide vs. long
+
+.pull-left[
+### .green[wide]
+mais colunas / variáveis
+```{r echo=FALSE}
+clientes
+```
+]
+
+--
+.pull-right[
+### .pink[long]
+mais linhas / observações
+```{r echo=FALSE}
+clientes %>%
+  pivot_longer(cols = item_1:item_3, names_to = "item_no", values_to = "item")
+```
+]
+
+---
+
+## `pivot_longer()`
+
+.pull-left[
+- `data`
+]
+.pull-right[
+```{r eval=FALSE}
+pivot_longer(
+  data, #<<
+  cols, 
+  names_to = "name", 
+  values_to = "value"
+  )
+```
+]
+
+---
+
+## `pivot_longer()`
+
+.pull-left[
+- `data`
+- `cols`: colunas a transpor para formato long
+]
+.pull-right[
+```{r eval=FALSE}
+pivot_longer(
+  data, 
+  cols, #<<
+  names_to = "name", 
+  values_to = "value"
+  )
+```
+]
+
+---
+
+## `pivot_longer()`
+
+.pull-left[
+- `data`
+- `cols`: colunas a transpor para formato long
+- `names_to`: nome da variável que vai receber os nomes das colunas a transpor para long, como valores
+]
+.pull-right[
+```{r eval=FALSE}
+pivot_longer(
+  data, 
+  cols, 
+  names_to = "name", #<<
+  values_to = "value"
+  )
+```
+]
+
+---
+
+## `pivot_longer()`
+
+.pull-left[
+- `data`
+- `cols`: colunas a transpor para formato long
+- `names_to`: nome da variável que vai receber os nomes das colunas a transpor para long, como valores
+- `values_to`: nome da variável que vai receber os valores atualmente dispersos por várias colunas (string)
+]
+.pull-right[
+```{r eval=FALSE}
+pivot_longer(
+  data, 
+  cols, 
+  names_to = "name", 
+  values_to = "value" #<<
+  )
+```
+]
+
+---
+
+## clientes $\rightarrow$ compras
+
+```{r}
+compras <- clientes %>%
+  pivot_longer( #<<
+    cols = item_1:item_3,  # variables item_1 to item_3 #<<
+    names_to = "item_no",  # column names -> new column called item_no #<<
+    values_to = "item"     # values in columns -> new column called item #<<
+    ) #<<
+
+compras
+```
+
+---
+
+## Exemplo da importância de dados tidy
+
+Várias operações de transformação requerem-no (e.g. _join_ - prox. aula)
+
+--
+
+.pull-left[
+```{r}
+precos
+```
+]
+.pull-right[
+```{r}
+compras %>%
+  left_join(precos) #<<
+```
+]
+
+---
+
+## compras $\rightarrow$ clientes
+
+.pull-left-narrow[
+- `data`
+- `names_from`: variável em formato long a transpor para nomes de novas colunas
+- `values_from`: variável em formato long que contêm valores a dispersar por várias colunas no formato wide
+]
+.pull-right-wide[
+```{r}
+compras %>%
+  pivot_wider( #<<
+    names_from = item_no, #<<
+    values_from = item #<<
+  ) #<<
+```
+]
+

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Visualização de dados com o ggplot2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Adaptado de datasciencebox.org" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="../xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="../slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Visualização de dados com o ggplot2
+]
+.author[
+### Adaptado de <a href="https://datasciencebox.org/">datasciencebox.org</a>
+]
+
+---
+
+
+
+
+
+layout: true
+
+
+---
+
+
+
+## Análise exploratória de dados
+
+- Análise a conjuntos de dados de forma a sumarizar e entender as suas principais características
+- Muitas vezes, é mais fácil fazê-lo visualmente com gráficos (agora)
+--
+
+- Mas também pode ser necessitar de manipulação e transformação dos dados, e cálculo de estatísticas básicas (próximas sessões)
+
+---
+
+## Peso vs. altura
+
+.question[ 
+Qual é a relação peso vs. altura entre as personagens do Star Wars?
+Haverá outras variáveis que possam ajudar a compreender esta relação?
+]
+
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Jabba!
+
+&lt;img src="img/jabbaplot.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Visualização de dados no tidyverse = **ggplot**
+
+.pull-left[
+&lt;img src="img/ggplot2-part-of-tidyverse.png" width="80%" style="display: block; margin: auto;" /&gt;
+] 
+.pull-right[ 
+- `gg` = Gramática dos Gráficos ( _Grammar of Graphics_ )
+- Inspirado pelo livro **Grammar of Graphics** de Leland Wilkinson
+- Estrutura básica do código
+
+````r
+ggplot(data = [dataset], 
+       mapping = aes(x = [x-variable], 
+                     y = [y-variable])) +
+   geom_xxx() +
+   other options
+````
+
+]
+
+---
+
+## Gramática dos Gráficos
+
+.pull-left-narrow[
+Descrição geral dos vários componentes que **qualquer** gráfico tem
+]
+.pull-right-wide[
+&lt;img src="img/grammar-of-graphics.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.footnote[ Source: [BloggoType](http://bloggotype.blogspot.com/2016/08/holiday-notes2-grammar-of-graphics.html)]
+
+---
+
+## Dados: Pinguins de Palmer
+
+Medições feitas a diferentes espécies de pinguins numa ilha do Archipelago Palmer: dimensões (barbatanas, bico, peso) e sexo.
+
+.pull-left-narrow[
+&lt;img src="img/penguins.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+.pull-right-wide[
+
+```r
+library(palmerpenguins)
+glimpse(penguins)
+```
+
+```
+## Rows: 344
+## Columns: 8
+## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adeli…
+## $ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torg…
+## $ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.…
+## $ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.…
+## $ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195…
+## $ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 362…
+## $ sex               &lt;fct&gt; male, female, female, NA, female, mal…
+## $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2…
+```
+]
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(data = penguins, 
+       mapping = aes(x = bill_depth_mm, y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Comprimento e largura do bico",
+       x = "Largura (mm)", y = "Comprimento (mm)",
+       colour = "Espécie")
+```
+
+```
+## Warning: Removed 2 rows containing missing values
+## (`geom_point()`).
+```
+]
+]
+
+---
+
+class: middle
+
+# Construção de um gráfico no ggplot2
+
+---
+
+.midi[
+&gt; **Começamos com o data frame `penguins`**
+]
+
+.pull-left[
+
+```r
+*ggplot(data = penguins)
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; **mapeamos a largura do bico ao eixo dos x**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+*      mapping = aes(x = bill_depth_mm))
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; **e o comprimento ao eixo dos y.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+*                    y = bill_length_mm))
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; e o comprimento ao eixo dos y. 
+&gt; **Representamos cada observação por um ponto**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm)) + 
+* geom_point()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; e o comprimento ao eixo dos y. 
+&gt; Representamos cada observação por um ponto
+&gt; **e mapeamos a espécie à cor dos pontos.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+*                    colour = species)) +
+  geom_point()
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; e o comprimento ao eixo dos y. 
+&gt; Representamos cada observação por um ponto
+&gt; e mapeamos a espécie à cor dos pontos.
+&gt; **Damos um título ao gráfico,**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+* labs(title = "Comprimento e largura do bico")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; e o comprimento ao eixo dos y. 
+&gt; Representamos cada observação por um ponto
+&gt; e mapeamos a espécie à cor dos pontos.
+&gt; Damos um título ao gráfico,
+&gt; **alteramos as legendas dos eixos**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Comprimento e largura do bico",
+*      x = "Largura (mm)", y = "Comprimento (mm)")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`,
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; e o comprimento ao eixo dos y. 
+&gt; Representamos cada observação por um ponto
+&gt; e mapeamos a espécie à cor dos pontos.
+&gt; Damos um título ao gráfico,
+&gt; alteramos as legendas dos eixos **e o título da legenda das cores.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Comprimento e largura do bico",
+       x = "Largura (mm)", y = "Comprimento (mm)",
+*      colour = "Espécie")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.midi[
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico ao eixo dos x
+&gt; e o comprimento ao eixo dos y. 
+&gt; Representamos cada observação por um ponto
+&gt; e mapeamos a espécie à cor dos pontos.
+&gt; Damos um título ao gráfico,
+&gt; alteramos as legendas dos eixos e o título da legenda das cores.
+&gt; **Acrescentamos uma nota com a fonte dos dados.**
+]
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Comprimento e largura do bico",
+       x = "Largura (mm)", y = "Comprimento (mm)",
+       colour = "Espécie",
+*      caption = "Fonte: Palmer Station LTER / palmerpenguins package")
+```
+]
+.pull-right[
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+&lt;img src="u2-d02-ggplot2_AT_LTM_v0.1_files/figure-html/unnamed-chunk-18-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+.panel[.panel-name[Code]
+
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() +
+  labs(title = "Comprimento e largura do bico",
+       x = "Largura (mm)", y = "Comprimento (mm)",
+       colour = "Espécie",
+       caption = "Fonte: Palmer Station LTER / palmerpenguins package") 
+```
+
+```
+## Warning: Removed 2 rows containing missing values
+## (`geom_point()`).
+```
+]
+.panel[.panel-name[Narrative]
+.pull-left-wide[
+.midi[
+ Começamos com o data frame `penguins`,
+ mapeamos a largura do bico ao eixo dos x
+ e o comprimento ao eixo dos y. 
+ Representamos cada observação por um ponto
+ e mapeamos a espécie à cor dos pontos.
+ Damos um título ao gráfico,
+ alteramos as legendas dos eixos e o título da legenda das cores.
+ Acrescentamos uma nota com a fonte dos dados.
+
+]
+]
+]
+]
+
+---
+
+## Dica: podemos omitir os nomes dos primeiros argumentos em ggplot
+
+.pull-left[
+
+```r
+ggplot(data = penguins,
+       mapping = aes(x = bill_depth_mm,
+                     y = bill_length_mm,
+                     colour = species)) +
+  geom_point() 
+```
+]
+.pull-right[
+
+```r
+ggplot(penguins,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm,
+           colour = species)) +
+  geom_point() 
+```
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": true,
+"highlightStyle": "solarized-light",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Visualising data with ggplot2</title>
+    <title>Visualização de dados com o ggplot</title>
     <meta charset="utf-8" />
-    <meta name="author" content="datasciencebox.org" />
+    <meta name="author" content="Adaptado de datasciencebox.org" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
@@ -17,13 +17,10 @@
 class: center, middle, inverse, title-slide
 
 .title[
-# Visualising data with ggplot2
-]
-.subtitle[
-## <br><br> Data Science in a Box
+# Visualização de dados com o ggplot
 ]
 .author[
-### <a href="https://datasciencebox.org/">datasciencebox.org</a>
+### Adaptado de <a href="https://datasciencebox.org/">datasciencebox.org</a>
 ]
 
 ---
@@ -33,22 +30,12 @@ class: center, middle, inverse, title-slide
 
 
 layout: true
-  
-&lt;div class="my-footer"&gt;
-&lt;span&gt;
-&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt;
-&lt;/span&gt;
-&lt;/div&gt; 
+
 
 ---
 
 
 
-class: middle
-
-# ggplot2 ❤️ 🐧
-
----
 
 ## ggplot2 `\(\in\)` tidyverse
 
@@ -59,14 +46,13 @@ class: middle
 - **ggplot2** is tidyverse's data visualization package 
 - Structure of the code for plots can be summarized as
 
-
-```r
+````r
 ggplot(data = [dataset], 
        mapping = aes(x = [x-variable], 
                      y = [y-variable])) +
    geom_xxx() +
    other options
-```
+````
 ]
 
 ---
@@ -88,14 +74,14 @@ glimpse(penguins)
 ```
 ## Rows: 344
 ## Columns: 8
-## $ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adeli…
-## $ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torg…
-## $ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.…
-## $ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.…
-## $ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195…
-## $ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 362…
-## $ sex               &lt;fct&gt; male, female, female, NA, female, mal…
-## $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2…
+## $ species           [3m[38;5;246m&lt;fct&gt;[39m[23m Adelie, Adelie, Adelie, Adelie, Adeli…
+## $ island            [3m[38;5;246m&lt;fct&gt;[39m[23m Torgersen, Torgersen, Torgersen, Torg…
+## $ bill_length_mm    [3m[38;5;246m&lt;dbl&gt;[39m[23m 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.…
+## $ bill_depth_mm     [3m[38;5;246m&lt;dbl&gt;[39m[23m 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.…
+## $ flipper_length_mm [3m[38;5;246m&lt;int&gt;[39m[23m 181, 186, 195, NA, 193, 190, 181, 195…
+## $ body_mass_g       [3m[38;5;246m&lt;int&gt;[39m[23m 3750, 3800, 3250, NA, 3450, 3650, 362…
+## $ sex               [3m[38;5;246m&lt;fct&gt;[39m[23m male, female, female, NA, female, mal…
+## $ year              [3m[38;5;246m&lt;int&gt;[39m[23m 2007, 2007, 2007, 2007, 2007, 2007, 2…
 ```
 ]
 
@@ -103,7 +89,7 @@ glimpse(penguins)
 
 .panelset[
 .panel[.panel-name[Plot]
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 ]
 .panel[.panel-name[Code]
 
@@ -120,7 +106,8 @@ ggplot(data = penguins,
 ```
 
 ```
-## Warning: Removed 2 rows containing missing values (geom_point).
+## Warning: Removed 2 rows containing missing values
+## (`geom_point()`).
 ```
 ]
 ]
@@ -144,13 +131,13 @@ class: middle
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
+&gt; Começamos com o data frame `penguins`
 &gt; **map bill depth to the x-axis**
 ]
 
@@ -162,14 +149,77 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
+class: middle
+
+# Análise exploratória de dados
+
+---
+
+## O que é?
+
+- Análise a conjuntos de dados de forma a sumarizar e entender as suas principais características
+- Muitas vezes, é mais fácil fazê-lo visualmente com gráficos (agora)
+- Mas também pode ser necessitar de manipulação e transformação dos dados, e cálculo de estatísticas básicas (próximas sessões)
+
+---
+
+## Peso vs. altura
+
+.question[ 
+Qual é a relação peso vs. altura entre as personagens do Star Wars?
+Haverá outras variáveis que possam ajudar a compreender esta relação?
+Quem é o outlier?
+]
+
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Jabba!
+
+&lt;img src="img/jabbaplot.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: middle
+
+# Data visualization
+
+---
+
+## Visualização de dados no tidyverse = **ggplot**
+
+.pull-left[
+&lt;img src="img/ggplot2-part-of-tidyverse.png" width="80%" style="display: block; margin: auto;" /&gt;
+] 
+.pull-right[ 
+- `gg` = Gramática dos Gráficos ( _Grammar of Graphics_ )
+- Inspirado pelo livro **Grammar of Graphics** de Leland Wilkinson
+]
+
+---
+
+## Gramática dos Gráficos
+
+.pull-left-narrow[
+Descrição geral dos vários componentes que **qualquer** gráfico ten
+]
+.pull-right-wide[
+&lt;img src="img/grammar-of-graphics.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.footnote[ Source: [BloggoType](http://bloggotype.blogspot.com/2016/08/holiday-notes2-grammar-of-graphics.html)]
+
+---
+
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
 &gt; **and map bill length to the y-axis.**
 ]
 
@@ -182,15 +232,15 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
 &gt; **Represent each observation with a point**
 ]
 
@@ -204,16 +254,16 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
 &gt; **and map species to the colour of each point.**
 ]
 
@@ -228,17 +278,17 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
-&gt; and map species to the colour of each point.
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
+&gt; e mapeamos a espécie com a cor dos pontos.
 &gt; **Title the plot "Bill depth and length"**
 ]
 
@@ -254,18 +304,18 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
-&gt; and map species to the colour of each point.
-&gt; Title the plot "Bill depth and length", 
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
+&gt; e mapeamos a espécie com a cor dos pontos.
+&gt; Damos um título ao gráfico,
 &gt; **add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins"**
 ]
 
@@ -282,20 +332,20 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
-&gt; and map species to the colour of each point.
-&gt; Title the plot "Bill depth and length", 
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
+&gt; e mapeamos a espécie com a cor dos pontos.
+&gt; Damos um título ao gráfico,
 &gt; add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", 
-&gt; **label the x and y axes as "Bill depth (mm)" and "Bill length (mm)", respectively**
+&gt; **e alteramos as legendas dos eixos.**
 ]
 
 .pull-left[
@@ -312,20 +362,20 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
-&gt; and map species to the colour of each point.
-&gt; Title the plot "Bill depth and length", 
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
+&gt; e mapeamos a espécie com a cor dos pontos.
+&gt; Damos um título ao gráfico,
 &gt; add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", 
-&gt; label the x and y axes as "Bill depth (mm)" and "Bill length (mm)", respectively,
+&gt; e alteramos as legendas dos eixos.,
 &gt; **label the legend "Species"**
 ]
 
@@ -344,20 +394,20 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-18-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
-&gt; and map species to the colour of each point.
-&gt; Title the plot "Bill depth and length", 
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
+&gt; e mapeamos a espécie com a cor dos pontos.
+&gt; Damos um título ao gráfico,
 &gt; add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", 
-&gt; label the x and y axes as "Bill depth (mm)" and "Bill length (mm)", respectively,
+&gt; e alteramos as legendas dos eixos.,
 &gt; label the legend "Species", 
 &gt; **and add a caption for the data source.**
 ]
@@ -378,20 +428,20 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .midi[
-&gt; Start with the `penguins` data frame,
-&gt; map bill depth to the x-axis
-&gt; and map bill length to the y-axis. 
-&gt; Represent each observation with a point
-&gt; and map species to the colour of each point.
-&gt; Title the plot "Bill depth and length", 
+&gt; Começamos com o data frame `penguins`
+&gt; mapeamos a largura do bico no eixo dos x
+&gt; e o comprimento no eixo dos y. 
+&gt; Representamos cada observação com um ponto
+&gt; e mapeamos a espécie com a cor dos pontos.
+&gt; Damos um título ao gráfico,
 &gt; add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", 
-&gt; label the x and y axes as "Bill depth (mm)" and "Bill length (mm)", respectively,
+&gt; e alteramos as legendas dos eixos.,
 &gt; label the legend "Species", 
 &gt; and add a caption for the data source.
 &gt; **Finally, use a discrete colour scale that is designed to be perceived by viewers with common forms of colour blindness.**
@@ -414,14 +464,14 @@ ggplot(data = penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
 
 .panelset[
 .panel[.panel-name[Plot]
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-18-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-21-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 ]
 .panel[.panel-name[Code]
 
@@ -441,7 +491,8 @@ ggplot(data = penguins,
 ```
 
 ```
-## Warning: Removed 2 rows containing missing values (geom_point).
+## Warning: Removed 2 rows containing missing values
+## (`geom_point()`).
 ```
 ]
 .panel[.panel-name[Narrative]
@@ -456,7 +507,7 @@ and map species to the colour of each point.
 
 Title the plot "Bill depth and length", 
 add the subtitle "Dimensions for Adelie, Chinstrap, and Gentoo Penguins", 
-label the x and y axes as "Bill depth (mm)" and "Bill length (mm)", respectively,
+e alteramos as legendas dos eixos.,
 label the legend "Species", 
 and add a caption for the data source.
 
@@ -530,7 +581,7 @@ ggplot(penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -552,7 +603,7 @@ ggplot(penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -574,7 +625,7 @@ ggplot(penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -595,29 +646,7 @@ ggplot(penguins,
 ```
 ]
 .pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
----
-
-## Alpha
-
-.pull-left[
-
-```r
-ggplot(penguins,
-       aes(x = bill_depth_mm, 
-           y = bill_length_mm,
-           colour = species,
-           shape = species,
-           size = body_mass_g,
-*          alpha = flipper_length_mm)) +
-  geom_point() +
-  scale_colour_viridis_d()
-```
-]
-.pull-right[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -635,7 +664,7 @@ ggplot(penguins,
   geom_point()
 ```
 
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 .pull-right[
 **Setting**
@@ -648,7 +677,7 @@ ggplot(penguins,
 * geom_point(size = 2, alpha = 0.5)
 ```
 
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -661,158 +690,6 @@ ggplot(penguins,
 - **Setting:** Determine the size, alpha, etc. of points **not** based on the values of a variable in the data
   - goes into `geom_*()` (this was `geom_point()` in the previous example, but we'll learn about other geoms soon!)
   
----
-
-class: middle
-
-# Faceting
-
----
-
-## Faceting
-
-- Smaller plots that display different subsets of the data
-- Useful for exploring conditional relationships and large data
-
----
-
-.panelset[
-.panel[.panel-name[Plot]
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-26-1.png" width="70%" style="display: block; margin: auto;" /&gt;
-]
-.panel[.panel-name[Code]
-
-
-```r
-ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
-  geom_point() +
-* facet_grid(species ~ island)
-```
-
-```
-## Warning: Removed 2 rows containing missing values (geom_point).
-```
-]
-]
-
----
-
-## Various ways to facet
-
-.question[
-In the next few slides describe what each plot displays. Think about how the code relates to the output.
-
-**Note:** The plots in the next few slides do not have proper titles, axis labels, etc. because we want you to figure out what's happening in the plots.
-But you should always label your plots!
-]
-
----
-
-
-```r
-ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
-  geom_point() +
-* facet_grid(species ~ sex)
-```
-
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
----
-
-
-```r
-ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
-  geom_point() +
-* facet_grid(sex ~ species)
-```
-
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-28-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
----
-
-
-```r
-ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
-  geom_point() +
-* facet_wrap(~ species)
-```
-
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-29-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
----
-
-
-```r
-ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
-  geom_point() +
-* facet_grid(. ~ species)
-```
-
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-30-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
----
-
-
-```r
-ggplot(penguins, aes(x = bill_depth_mm, y = bill_length_mm)) + 
-  geom_point() +
-* facet_wrap(~ species, ncol = 2)
-```
-
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-31-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
----
-
-## Faceting summary
-
-- `facet_grid()`:
-    - 2d grid
-    - `rows ~ cols`
-    - use `.` for no split
-- `facet_wrap()`: 1d ribbon wrapped according to number of rows and columns specified or available plotting area
-
----
-
-## Facet and color
-
-.pull-left-narrow[
-
-```r
-ggplot(
-  penguins, 
-  aes(x = bill_depth_mm, 
-      y = bill_length_mm, 
-*     color = species)) +
-  geom_point() +
-  facet_grid(species ~ sex) +
-* scale_color_viridis_d()
-```
-]
-.pull-right-wide[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-32-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
----
-
-## Face and color, no legend
-
-.pull-left-narrow[
-
-```r
-ggplot(
-  penguins, 
-  aes(x = bill_depth_mm, 
-      y = bill_length_mm, 
-      color = species)) +
-  geom_point() +
-  facet_grid(species ~ sex) +
-  scale_color_viridis_d() +
-* guides(color = "none")
-```
-]
-.pull-right-wide[
-&lt;img src="u2-d02-ggplot2_files/figure-html/unnamed-chunk-33-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

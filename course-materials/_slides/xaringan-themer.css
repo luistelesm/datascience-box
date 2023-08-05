@@ -29,27 +29,27 @@
   --text-font-is-google: 1;
   --text-font-family-fallback: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial;
   --text-font-base: sans-serif;
-  --header-font-family: Cabin;
+  --header-font-family:'Source Sans Pro'; 
   --header-font-is-google: 1;
   --code-font-family: 'Source Sans Code';
   --code-font-is-google: 1;
-  --base-font-size: 28px;
+  --base-font-size: 32px;
   --text-font-size: 1rem;
   --code-font-size: 20px;
   --code-inline-font-size: 1em;
-  --header-h1-font-size: 2rem;
+  --header-h1-font-size: 1.75rem;
   --header-h2-font-size: 1.75rem;
   --header-h3-font-size: 1.5rem;
 
   /* Colors */
-  --text-color: #f6f6f6;
-  --header-color: #A7D5E8;
-  --background-color: #002b36;
-  --link-color: #A7D5E8;
-  --text-bold-color: #E9AFA3;
-  --code-highlight-color: #A7D5E8;
-  --inverse-text-color: #002b36;
-  --inverse-background-color: #ffffff;
+  --text-color:  #000000;
+  --header-color:#000000;
+  --background-color:#ffffff;
+  --link-color: #002b36;
+  --text-bold-color: #800000;
+  --code-highlight-color: #A7D5E8; 
+  --inverse-text-color: #000000;
+  --inverse-background-color:  #002b36;
   --inverse-header-color: #A7D5E8;
   --title-slide-background-color: #002b36;
   --title-slide-text-color: #A7D5E8;
@@ -95,7 +95,7 @@ h1, h2, h3 {
 }
 .remark-inline-code {
   font-size: var(--code-inline-font-size);
-  color: #A7A7A7;
+  color: #424242;
 }
 .remark-slide-number {
   color: #586e75;

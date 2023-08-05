@@ -23,6 +23,13 @@ library(tidymodels)
 set.seed(1234)
 ```
 
+---
+
+```{r out.width="100%", echo=FALSE}
+knitr::include_graphics("img/cover.png")
+```
+---
+
 class: middle
 
 # What is a model?

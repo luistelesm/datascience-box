@@ -1,0 +1,170 @@
+---
+title: "Hypothesis testing"
+subtitle: "<br><br> Data Science in a Box"
+author: "[datasciencebox.org](https://datasciencebox.org/)"
+output:
+  xaringan::moon_reader:
+    css: ["../xaringan-themer.css", "../slides.css"]
+    lib_dir: libs
+    anchor_sections: FALSE
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(DT)
+#library(emoji)
+library(openintro)
+```
+
+class: middle
+
+# 
+
+---
+
+## Packages
+
+```{r message=FALSE}
+library(tidyverse)
+library(tidymodels)
+```
+
+
+---
+
+## Teste de hipóteses 
+
+### Exemplo médico
+
+- **Facto para efeitos desta aula:** está comprovado que a probabilidade de surgirem complicações graves é, para qualquer hospital em Portugal, **10%**.
+
+.question[
+- _Chefe do Serv. de Cirurgia do Hospital da Guarda:_<br> Graças às práticas que implementámos, apenas tivemos 30 casos complicados no ano de 2022.
+]
+- A sua tese: isto comprova que as melhorias que implementou conduziram a uma redução da probabilidade de existirem complicações  graves no Hospital da Guarda, face ao que acontece no resto do país. 
+--
+**Será?**
+
+---
+
+### Dados: Exercício
+
+- O n.º total de cirurgias no Hospital da Guarda em 2022 foi de 500.
+- Crie de raíz, através de código, uma tabela com um registo para cada cirurgia e uma variável binária que assinala se existiram complicações. Dica:
+ - Primeiro, crie uma tabela em que a variável indica que não houve complicações em todos os registos
+ - Segundo, altere o valor apenas das primeiras 30 linhas
+--
+
+```{r}
+cirurgias_Guarda <- tibble(
+  no_cirurgia = seq(0, 500),
+  I_Complicacoes = FALSE
+)
+# Variável binária => utilizar valores do tipo logical
+cirurgias_Guarda$I_Complicacoes[0:30] = TRUE
+
+```
+
+---
+
+### Dados: Exercício 2
+
+- Como é que poderia realizar o mesmo procedimento acima (alterar só aqueles valores para TRUE), mas utilizando uma função do tidyverse?
+
+--
+
+```{r}
+cirurgias_Guarda <- cirurgias_Guarda %>% 
+  mutate(resultado = if_else(no_cirurgia <= 30, TRUE, FALSE))
+
+# Bonus: sem utilizar a variável n.º da cirurgia
+cirurgias_Guarda %>% mutate(resultado = if_else(n() <= 30, TRUE, FALSE))
+
+```
+
+
+
+---
+
+## Parâmetro e medida ou estimativa
+
+
+$p~$: probabilidade de existirem complicações graves em cirurgias em Portugal $= 10\%$.
+
+
+
+$\hat{p}~$: percentagem de complicações na Guarda em 2022 (na amostra) = $\frac{30}{500} = 6\%$
+
+--
+
+#### Correlação e causalidade
+
+.question[
+É possível confirmar a afirmação do diretor com estes dados?
+]
+
+--
+
+- Não -- **correlação vs. causalidade**: a probabilidade de existirem complicações na Guarda pode ser diferente do resto do país por outros motivos que não as alterações promovidas
+  - Ainda assim, podemos aferir se a taxa obtida, 6%, significa realmente que a probabilidade na Guarda é mais baixa na Guarda face ao resto do país. 
+  - Ou se pelo contrário, em 2022 a taxa foi mais baixa por mero acaso.
+---
+
+## 2 hipóteses
+
+O teste de hipóteses começa por definir a hipótese nula e a alternativa:
+
+- **Hipotese nula:** "Não há diferença entre a Guarda e o resto do país"
+
+--
+
+- **Hipótese alternativa:** "A taxa é de facto mais baixa na Guarda"
+
+---
+
+## Um teste de hipóteses é como um julgamento no tribunal
+
+- **Hipotese nula**, $H_0$: O réu é inocente
+
+- **Hipótese alternativa**, $H_A$: O réu é culpado
+
+--
+
+- **Apresentar o material probatório:** Recolher os *dados*
+
+--
+
+**Julgar com base nas provas:** 
+
+  - Se a hipótese nula for verdadeira:
+    - (Ou seja, se a probabilidade de complicações continuar igual ao resto do país)
+    - Será plausível ter sido obtido um valor tão baixo este ano?
+
+.center[ **Sim**: Não se rejeita a H0 vs. **Não**: Rejeita-se a H0 ]
+    
+---
+
+## Estrutura de qualquer teste de hipóteses
+
+- Começa-se com a hipótese nula, $H_0$, que representa o status quo
+- A hipótese alternativa, $H_A$, representa a pergunta de investigação, i.e. a informação nova, cuja verosimilhança queremos testar.
+  - Para testar a hipótese de $H_0$ ser verdadeira, obtém-se o **p-value** $\rightarrow$ probabilidade de um resultado tão ou mais *extremo* que o observado, sob a hipótese nula
+- Duas possibilidades:
+
+.pull-left[**p-value alto** $\Rightarrow$ as provas <u>não</u> permitem rejeitar  $H_0$
+- A taxa de complicações observada (6%) parece plausível sob  $H_0$]
+.pull-right[
+**p-value baixo** $\Rightarrow$ as provas permitem rejeitar  $H_0$
+- Sob  $H_0$, parece difícil que se observasse uma taxa tão baixa
+]
+
+

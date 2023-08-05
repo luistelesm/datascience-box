@@ -23,7 +23,7 @@ style_solarized_dark(
   table_border_color = "#8A8A8A",              # gray
   table_row_border_color = "#8A8A8A",          # gray
   table_row_even_background_color = "#004a5d", # slightly lighter dark-blue
-  base_font_size = "28px",
+  base_font_size = "34px",
   header_h1_font_size = "2rem",
   header_h2_font_size = "1.75rem",
   header_h3_font_size = "1.5rem",

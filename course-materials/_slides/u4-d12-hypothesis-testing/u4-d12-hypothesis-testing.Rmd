@@ -21,7 +21,7 @@ output:
 library(tidyverse)
 library(tidymodels)
 library(DT)
-library(emo)
+#library(emo)
 library(openintro)
 ```
 
