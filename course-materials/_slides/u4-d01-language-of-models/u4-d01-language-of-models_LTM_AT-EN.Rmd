@@ -1,0 +1,401 @@
+---
+title: "The language of models"
+subtitle: "<br><br> Data Science in a Box"
+author: "[datasciencebox.org](https://datasciencebox.org/)"
+output:
+  xaringan::moon_reader:
+    css: ["../xaringan-themer.css", "../slides.css"]
+    lib_dir: libs
+    anchor_sections: FALSE
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo = FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(ggpmisc)
+set.seed(1234)
+```
+---
+
+```{r out.width="100%", echo=FALSE}
+knitr::include_graphics("img/cover.png")
+```
+
+---
+class: middle
+# What is a **model**?
+
+---
+
+## Linear models
+
+- We use **models** to analyze the relationship between several (random) variables. Goal:
+   - make predictions (through statistical inference)...
+   - about unknown aspects of reality (parameters)...
+   - from known information (samples).
+--
+
+- Here we will stick to linear models, or **linear regression**
+- Bear in mind that reality is often not linear...
+   - Linearity: simplifying hypothesis
+
+
+---
+
+## Linear models
+  
+.pull-left[
+```{r echo = FALSE, out.width = "100%"}
+df1 <- tibble(x = 1:100, y = x + rnorm(100, mean = 0, sd = 5))
+
+ggplot(df1, aes(x = x, y = y)) +
+   geom_point() +
+   geom_smooth(method = "lm", color = "#E48957", se = FALSE) +
+   labs(title = "Linear", x = NULL, y = NULL) +
+   theme(
+     axis.text = element_blank(),
+     axis.ticks = element_blank()
+     )
+```
+]
+.pull-right[
+```{r echo = FALSE, out.width = "100%"}
+df2 <- tibble(x = seq(-6, 5.9, 0.1), y = (1 / (1+exp(-2*x))) + rnorm(120, mean = 0, sd = 0.1))
+ggplot(df2, aes(x = x, y = y)) +
+   geom_point() +
+   geom_smooth(method = "loess", color = "#8E2C90", se = FALSE) +
+   labs(title = "Nonlinear", x = NULL, y = NULL) +
+   theme(
+     axis.text = element_blank(),
+     axis.ticks = element_blank()
+     )
+```
+]
+
+---
+class: middle
+
+# Data: Paris frames
+
+
+
+---
+
+## Auctions in Paris in the 19th century. XVIII
+
+
+```{r out.width="45%", echo=FALSE}
+knitr::include_graphics("img/old-auction.png")
+```
+.small[
+_Pierre-Antoine de Machy, Public Sale at the Hôtel Bullion, Musée Carnavalet, Paris (18th century)_
+]
+
+.center[**paris-paintings.xlsx**]
+
+- Source: Printed catalogs of 28 art auctions in Paris, 1764 - 1780
+- Credits: Sandra van Ginhoven and Hilary Coe Cronheim (U. Duke)
+
+---
+
+## _Depart for the chasse_
+
+```{r out.width="65%", echo=FALSE}
+knitr::include_graphics("img/depart-pour-la-chasse.png")
+```
+
+---
+
+## Primary source of data
+
+.pull-left[
+```{r out.width="60%", echo=FALSE}
+knitr::include_graphics("img/auction-catalogue.png")
+```
+]
+.pull-right[
+.small[
+Two paintings very rich in composition, of a beautiful execution, and whose merit is very remarkable, each 17 inches 3 lines high, 23 inches wide; the first, painted on wood, comes from the Cabinet of Madame la Comtesse de Verrue; it represents a **departure for the hunt**: it shows in the front a child on a white horse, a man who gives the horn to gather the dogs, a falconer and other figures nicely distributed across the width of the painting; two horses drinking from a fountain; on the right in the corner a lovely country house topped by a terrace, on which people are at the table, others who play instruments; trees and fabriques pleasantly enrich the background.
+]
+]
+
+---
+
+```{r out.width="55%", echo=FALSE}
+knitr::include_graphics("img/painting1.png")
+knitr::include_graphics("img/painting2.png")
+knitr::include_graphics("img/painting3.png")
+```
+
+- $>3000$ pictures, prices, and digitized details $\rightarrow$ $>60$ variables
+
+
+---
+
+## Insert slide on read_excel
+
+---
+
+## Import the data
+
+- Import the data in the **data** sheet of the Excel book **paris-paintings.xlsx**:
+   - For an object with the name **pp**
+   - Ensuring that any of these: "n/a", "", "NA" is correctly interpreted as `r NA` value
+
+- Try using R menus first...
+- ... and then using the **read_excel** function. What is the fastest way?
+
+---
+
+## Import the data
+
+```{r dnload-data, message=FALSE, out.width="40%"}
+pp <- readxl::read_excel("data/paris-paintings.xlsx", sheet = "data",
+                na = c("n/a", "", "NA"))
+
+pp
+```
+
+
+---
+
+class: middle
+
+# Model: width x height?
+
+---
+## Distributions (univariate)
+
+#### Height
+
+.small[
+```{r height-dist, out.width="50%", warning=FALSE}
+ggplot(data = pp, aes(x = Height_in)) +
+   geom_histogram(binwidth = 5) +
+   labs(x = "Inches", y = NULL)
+```
+]
+
+---
+
+## Marginal distributions (univariate)
+
+#### Width
+
+.small[
+```{r width-dist, out.width="50%", warning=FALSE}
+ggplot(data = pp, aes(x = Width_in)) +
+   geom_histogram(binwidth = 5) +
+   labs(x = "Inches", y = NULL)
+```
+]
+
+---
+
+## Height vs width (multivariate)
+
+
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "height-width-plot-no-se", echo = FALSE, warning = FALSE, out.width = "60%"}
+```
+]
+.panel[.panel-name[Code]
+
+```{r height-width-plot-no-se, fig.show="hide", warning=FALSE}
+ggplot(data = pp, aes(x = Width_in, y = Height_in)) +
+   geom_point() +
+   geom_smooth(method = "lm",
+               se = FALSE) + #<<
+   labs(
+     title = "Height vs. width of frames",
+     subtitle = "Paris auctions, 1764 - 1780",
+     x = "Width, inches",
+     y = "Height, inches"
+   )
+```
+]
+]
+
+
+---
+
+## ... with a measure of uncertainty
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "height-width-plot", echo = FALSE, warning = FALSE, out.width = "60%"}
+```
+]
+.panel[.panel-name[Code]
+
+```{r height-width-plot, fig.show="hide"}
+ggplot(data = pp, aes(x = Width_in, y = Height_in)) +
+   geom_point() +
+   geom_smooth(method = "lm") +
+   labs(
+     title = "Height vs. width of frames",
+     subtitle = "Paris auctions, 1764 - 1780",
+     x = "Width, inches",
+     y = "Height, inches"
+   )
+```
+]
+]
+
+- Confidence interval
+---
+
+## Vocabulary
+
+- **Dependent variable** or **response** Variable whose behavior we want to understand / variability we want to explain from another(s) -- **yy** axis
+
+--
+- **Independent variables** or **explanatory** Other variables that we use to explain the behavior of the dependent variable -- axis **xx**
+
+--
+- **Estimated** or predicted or adjusted value ($\hat{y}$): the output of the **model**
+   - The model gives the average (or expected) value of the dependent variable, *conditional*, i.e. for a given value, of the independent variable
+  
+--
+- **Residual**: A measure of how far each case is from its predicted value (based on a particular model)
+   - Residual = Observed value - Predicted value
+   - Indicates how close the model is to "getting it right" at a given point in the data, or in other words, how much the model "fails"
+
+---
+
+## Waste
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "height-width-plot-residuals", echo = FALSE, warning = FALSE, out.width = "60%"}
+```
+]
+.panel[.panel-name[Code]
+.small[
+```{r height-width-plot-residuals, fig.show="hide", warning=FALSE}
+ht_wt_fit <- linear_reg() %>%
+   set_engine("lm") %>%
+   fit(Height_in ~ Width_in, data = pp)
+
+ht_wt_fit_tidy <- tidy(ht_wt_fit$fit)
+ht_wt_fit_aug <- augment(ht_wt_fit$fit) %>%
+   mutate(res_cat = ifelse(.resid > 0, TRUE, FALSE))
+
+ggplot(data = ht_wt_fit_aug) +
+   geom_point(aes(x = Width_in, y = Height_in, color = res_cat)) +
+   geom_line(aes(x = Width_in, y = .fitted), size = 0.75, color = "#8E2C90") +
+   labs(
+     title = "Height vs. width of paintings",
+     subtitle = "Paris auctions, 1764 - 1780",
+     x = "Width (inches)",
+     y = "Height (inches)"
+   ) +
+   guides(color = "none") +
+   scale_color_manual(values = c("#260b27", "#e6b0e7")) +
+   geom_text(aes(x = 0, y = 150), label = "Positive residual", color = "#e6b0e7", hjust = 0, size = 8) +
+   geom_text(aes(x = 150, y = 25), label = "Negative residual", color = "#260b27", hjust = 0, size = 8)
+```
+]
+]
+]
+
+---
+
+.question[
+- What changed in the graph?
+- What pattern in the data has now become apparent?
+- What could it mean, in statistical terms? And in reality?
+]
+
+```{r height-width-plot-alpha, warning = FALSE, echo=FALSE, out.width="55%"}
+ggplot(data = pp, aes(x = Width_in, y = Height_in)) +
+   geom_point(alpha = 0.2) +
+   labs(
+     title = "Height vs. width of paintings",
+     subtitle = "Paris auctions, 1764 - 1780",
+     x = "Width (inches)",
+     y = "Height (inches)"
+   )
+```
+
+---
+
+## Landscapes vs. portraits
+
+- Landscape painting is the representation of landscapes - natural settings such as mountains, valleys, trees, rivers and forests
+composition
+    - Usually width $> $ height
+- In portrait painting the intention is to portray a human subject:
+    - Usually width $<$ height
+   
+---
+
+## Models, opportunities and risks
+
+- **Opportunity**: statistical models can reveal patterns that cannot be revealed in a graph
+   - especially in multiple regression models, i.e. with several explanatory variables simultaneously (next class)
+
+
+.pull-left[
+```{r width-plot-alpha, warning = FALSE, echo=FALSE, out.width="90%"}
+ggplot(data = pp %>% select(Width_in,Height_in, landsALL) %>% pivot_longer(c('Width_in','Height_in')) %>% filter(landsALL == 0)
+        ) +
+   geom_histogram(aes(x = value, fill = name),alpha = 0.6, position = 'identity') +
+   labs(
+     title = "Portraits",
+     x = "Inches",
+     y = "n"
+   ) + theme(legend.position = 'bottom')
+```
+]
+.pull-right[
+```{r hheight-plot-alpha, warning = FALSE, echo=FALSE, out.width="90%"}
+ggplot(data = pp %>% select(Width_in,Height_in, landsALL) %>% pivot_longer(c('Width_in','Height_in')) %>% filter(landsALL == 1)
+        ) +
+   geom_histogram(aes(x = value, fill = name), alpha = 0.6, position = 'identity') +
+   labs(
+     title = "Landscapes",
+     x = "Inches",
+     y = "n"
+   ) + theme(legend.position = 'bottom')
+```
+]
+
+---
+
+## Models, opportunities and risks
+
+- **Risk**: a model may indicate that the data has a certain structure (a distribution) that does not correspond to reality -- spurious regression
+
+.pull-left[
+```{r ursa-plot-no-se, warning=FALSE, echo = F, out.width="80%"}
+ggplot(data = pp, aes(x = Width_in, y = logprice)) + xlim(0,150) +
+   geom_point() +
+   geom_smooth(method = "lm",
+               se = FALSE) + #<<
+   labs(
+     title = "Height vs. width of frames",
+     subtitle = "Paris auctions, 1764 - 1780",
+     x = "Width, inches",
+     y = "Height, inches"
+   )
+```
+]
+
+--
+
+.pull-right[
+```{r out.width="80%", echo=FALSE}
+knitr::include_graphics("img/ursa-major-.jpg")
+```
+]

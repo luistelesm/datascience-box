@@ -1,0 +1,166 @@
+---
+title: "Hypothesis testing"
+subtitle: "<br><br> Data Science in a Box"
+author: "[datasciencebox.org](https://datasciencebox.org/)"
+output:
+  xaringan::moon_reader:
+    css: ["../xaringan-themer.css", "../slides.css"]
+    lib_dir: libs
+    anchor_sections: FALSE
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(DT)
+#library(emoji)
+library(openintro)
+```
+
+class: middle
+
+# 
+
+---
+
+## Packages
+
+```{r message=FALSE}
+library(tidyverse)
+library(tidymodels)
+```
+
+
+---
+## Hypothesis test
+
+### Medical example
+
+- **Fact for the purposes of this class:** it is proven that the probability of serious complications arising is, for any hospital in Portugal, **10%**.
+
+.question[
+- _Head of Serv. of Surgery at Hospital da Guarda:_<br> Thanks to the practices we implemented, we only had 30 complicated cases in the year 2022.
+]
+- His thesis: this proves that the improvements he implemented led to a reduction in the probability of serious complications occurring at the Hospital da Guarda, compared to the rest of the country.
+--
+**Could it be?**
+
+---
+
+### Data: Exercise
+
+- The total number of surgeries at Hospital da Guarda in 2022 was 500.
+- Create from scratch, using code, a table with a record for each surgery and a binary variable that indicates if there were complications. Tips:
+  - First, create a table with a variable indicating there were no complications in all records
+  - Second, change the value of only the first 30 lines
+--
+
+```{r}
+surgeries_Guarda <- tibble(
+   no_surgery = seq(0, 500),
+   I_Complications = FALSE
+)
+# Binary variable => use logical type values
+surgeries_Guarda$I_Complications[0:30] = TRUE
+
+```
+
+---
+
+### Data: Exercise 2
+
+- How could you perform the same procedure above (only changing those values to TRUE), but using a tidyverse function?
+
+--
+
+```{r}
+surgeries_Guarda <- surgeries_Guarda %>%
+   mutate(result = if_else(no_surgery <= 30, TRUE, FALSE))
+
+# Bonus: without using the surgery number variable
+surgeries_Guarda %>% mutate(result = if_else(n() <= 30, TRUE, FALSE))
+
+```
+
+
+
+---
+
+## Parameter and measurement or estimate
+
+
+$p~$: probability of serious complications occurring in surgeries in Portugal $= 10\%$.
+
+
+
+$\hat{p}~$: percentage of complications in the Guard in 2022 (in the sample) = $\frac{30}{500} = 6\%$
+
+--
+
+.question[
+Is it possible to confirm the director's statement with these data?
+]
+
+--
+
+- No -- **correlation vs. causality**: the probability of complications in Guarda may be different from the rest of the country for reasons other than the changes promoted
+   - Even so, we can assess if the rate obtained, 6%, really means that the probability in Guarda is lower  compared to the rest of the country.
+   - Or if on the contrary, in 2022 the rate was lower by mere chance.
+---
+
+## 2 hypotheses
+
+Hypothesis testing begins by defining the null and alternative hypotheses:
+
+- **Null hypothesis:** "There is no difference between Guarda and the rest of the country"
+
+--
+
+- **Alternative hypothesis:** "The rate is actually lower in Guarda"
+
+---
+
+## A hypothesis test is like a trial in court
+
+- **Null hypothesis**, $H_0$: The defendant is innocent
+
+- **Alternative hypothesis**, $H_A$: Defendant is guilty
+
+--
+
+- **Present the evidence:** Collect the *data*
+
+--
+
+**Judge based on evidence:**
+
+   - If the null hypothesis is true:
+     - (That is, if the probability of complications remains the same as in the rest of the country)
+     - Is it plausible that such a low value was obtained this year?
+
+.center[ **Yes**: H0 vs. **No**: H0 is rejected ]
+    
+---
+
+## Structure of any hypothesis test
+
+- You start with the null hypothesis, $H_0$, which represents the status quo
+- The alternative hypothesis, $H_A$, represents the research question, i.e. the new information, whose likelihood we want to test.
+   - To test the hypothesis that $H_0$ is true, obtain the **p-value** $\rightarrow$ probability of a result as  *extreme* than the one observed or more, under the null hypothesis
+- Two possibilities:
+
+.pull-left[**high p-value** $\Rightarrow$ proofs <u>don't</u> allow rejecting $H_0$
+- The observed complication rate (6%) seems plausible under $H_0$]
+.pull-right[
+**low p-value** $\Rightarrow$ proofs allow rejecting $H_0$
+- Under $H_0$, it seems difficult to observe such a low rate
+]
+

@@ -1,0 +1,428 @@
+---
+title: "Visualização de dados com o ggplot2"
+author: "Adaptado de [datasciencebox.org](https://datasciencebox.org/)"
+output:
+  xaringan::moon_reader:
+    css: ["../xaringan-themer.css", "../slides.css"]
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightLines: true
+      highlightStyle: solarized-light
+      countIncrementalSlides: false
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(palmerpenguins)
+library(magick)
+conflicts_prefer(palmerpenguins::penguins)
+```
+
+## Exploratory data analysis
+
+- Analysis of data sets in order to summarize and understand their main characteristics
+- It's often easier to do it visually with graphs (now)
+--
+
+- But it may also require data manipulation and transformation, and calculation of basic statistics (next sessions)
+
+---
+
+## Weight vs. height
+
+.question[
+What is the weight vs. weight ratio? height between Star Wars characters?
+Are there other variables that can help understand this relationship?
+]
+
+```{r fig.width = 8, warning = FALSE, echo=FALSE, out.width = "50%"}
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+   geom_point() +
+   labs(title = "Weight vs. height - Star Wars",
+        x = "Height (cm)", y = "Weight (kg)") +
+   geom_point(data = starwars %>% filter(name == "Jabba Desilijic Tiure"), size = 5, pch = 1, color = "pink", stroke = 3)
+```
+
+---
+
+## Jabba!
+
+```{r echo = FALSE, warning = FALSE, cache = TRUE, out.width = "80%"}
+jabba <- image_read("img/jabba.png")
+
+fig <- image_graph(width = 1600, height = 900, res = 200)
+ggplot(data = starwars, mapping = aes(x = height, y = mass)) +
+   geom_point() +
+   labs(title = "Weight vs. height - Star Wars",
+        x = "Height (cm)", y = "Weight (kg)") +
+   geom_point(data = starwars %>% filter(name == "Jabba Desilijic Tiure"), size = 5, pch = 1, color = "pink", stroke = 3)
+dev.off()
+
+out <- fig %>% image_composite(jabba, offset = "+1000+30")
+
+image_write(out, "img/jabbaplot.png", format = "png")
+knitr::include_graphics("img/jabbaplot.png")
+```
+
+---
+
+## Data visualization in tidyverse = **ggplot**
+
+.pull-left[
+```{r echo=FALSE, out.width="80%"}
+knitr::include_graphics("img/ggplot2-part-of-tidyverse.png")
+```
+]
+.pull-right[
+- `gg` = Grammar of Graphics ( _Grammar of Graphics_ )
+- Inspired by the book **Grammar of Graphics** by Leland Wilkinson
+- Basic code structure
+
+````r
+ggplot(data = [dataset],
+        mapping = aes(x = [x-variable],
+                      y = [y-variable])) +
+    geom_xxx() +
+    other options
+````
+
+]
+
+---
+
+##Graph Grammar
+
+.pull-left-narrow[
+General description of the various components that **any** chart has
+]
+.pull-right-wide[
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("img/grammar-of-graphics.png")
+```
+]
+
+.footnote[Source: [BloggoType](http://bloggotype.blogspot.com/2016/08/holiday-notes2-grammar-of-graphics.html)]
+
+---
+
+## Data: Palmer Penguins
+
+Measurements taken of different species of penguins on an island in the Palmer Archipelago: dimensions (fins, beak, weight) and sex.
+
+.pull-left-narrow[
+```{r echo=FALSE, out.width="80%"}
+knitr::include_graphics("img/penguins.png")
+```
+]
+.pull-right-wide[
+```{r}
+library(palmerpenguins)
+glimpse(palmerpenguins::penguins)
+```
+]
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label = "penguins", echo = FALSE, warning = FALSE, out.width = "70%", fig.width = 8}
+```
+]
+.panel[.panel-name[Code]
+
+```{r penguins, fig.show = "hide"}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm, y = bill_length_mm,
+                      color = species)) +
+   geom_point() +
+   labs(title = "Beak length and width",
+        x = "Width (mm)", y = "Length (mm)",
+        color = "Species")
+```
+]
+]
+
+---
+
+class: middle
+
+# Building a graph in ggplot2
+
+---
+.midi[
+> **We start with the `penguins` data frame**
+]
+
+.pull-left[
+```{r penguins-0, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins) #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-0", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.midi[
+> We start with the `penguins` data frame,
+> **we map the nozzle width to the x-axis**
+]
+
+.pull-left[
+```{r penguins-1, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm)) #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-1", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+
+
+---
+
+.midi[
+> We start with the `penguins` data frame,
+> we map the nozzle width to the x-axis
+> **and the length to the y-axis.**
+]
+
+.pull-left[
+```{r penguins-2, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm)) #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-2", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.midi[
+> We start with the `penguins` data frame,
+> we map the nozzle width to the x-axis
+> and the length to the y-axis.
+> **We represent each observation by a point**
+]
+
+.pull-left[
+```{r penguins-3, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm)) +
+   geom_point() #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-3", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.midi[
+> We start with the `penguins` data frame,
+> we map the nozzle width to the x-axis
+> and the length to the y-axis.
+> We represent each observation by a point
+> **and we map the species to the color of the dots.**
+]
+
+.pull-left[
+```{r penguins-4, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) + #<<
+   geom_point()
+```
+]
+.pull-right[
+```{r ref.label = "penguins-4", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.midi[
+> We start with the `penguins` data frame,
+> we map the nozzle width to the x-axis
+> and the length to the y-axis.
+> We represent each observation by a point
+> and we map the species to the color of the dots.
+> **We give the graph a title,**
+]
+
+.pull-left[
+```{r penguins-5, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) +
+   geom_point() +
+   labs(title = "Beak length and width") #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-5", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.midi[
+> We start with the `penguins` data frame,
+> we map the nozzle width to the x-axis
+> and the length to the y-axis.
+> We represent each observation by a point
+> and we map the species to the color of the dots.
+> We give the graph a title,
+> **we changed the axis labels**
+]
+
+.pull-left[
+```{r penguins-6, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) +
+   geom_point() +
+   labs(title = "Beak length and width",
+        x = "Width (mm)", y = "Length (mm)") #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-6", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+.midi[
+> We start with the `penguins` data frame,
+> we map the nozzle width to the x-axis
+> and the length to the y-axis.
+> We represent each observation by a point
+> and we map the species to the color of the dots.
+> We give the graph a title,
+> we changed the axis legends **and the title of the color legend.**
+]
+
+.pull-left[
+```{r penguins-7, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) +
+   geom_point() +
+   labs(title = "Beak length and width",
+        x = "Width (mm)", y = "Length (mm)",
+        color = "Species") #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-7", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.midi[
+> We start with the `penguins` data frame
+> we map the nozzle width to the x-axis
+> and the length to the y-axis.
+> We represent each observation by a point
+> and we map the species to the color of the dots.
+> We give the graph a title,
+> we changed the axis legends and the color legend title.
+> **We added a note with the source of the data.**
+]
+
+.pull-left[
+```{r penguins-8, fig.show = "hide", warning = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) +
+   geom_point() +
+   labs(title = "Beak length and width",
+        x = "Width (mm)", y = "Length (mm)",
+        color = "Species",
+        caption = "Source: Palmer Station LTER / palmerpenguins package") #<<
+```
+]
+.pull-right[
+```{r ref.label = "penguins-8", echo = FALSE, warning = FALSE, out.width = "100%", fig.width = 8}
+```
+]
+
+---
+
+.panelset[
+.panel[.panel-name[Plot]
+```{r ref.label="penguins-10-nohighlight", echo = FALSE, warning = FALSE, out.width = "70%", fig.width = 8}
+```
+]
+.panel[.panel-name[Code]
+
+```{r penguins-10-nohighlight, fig.show = "hide"}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) +
+   geom_point() +
+   labs(title = "Beak length and width",
+        x = "Width (mm)", y = "Length (mm)",
+        color = "Species",
+        caption = "Source: Palmer Station LTER / palmerpenguins package")
+```
+]
+.panel[.panel-name[Narrative]
+.pull-left-wide[
+.midi[
+  We start with the `penguins` data frame,
+  we map the nozzle width to the x-axis
+  and the length to the y-axis.
+  We represent each observation by a point
+  and we map the species to the color of the dots.
+  We give the graph a title,
+  changed the axis legends and the title of the color legend.
+  We added a note with the source of the data.
+
+]
+]
+]
+]
+
+---
+
+## Tip: we can omit the names of the first arguments in ggplot
+
+.pull-left[
+```{r named-args, eval = FALSE}
+ggplot(data = palmerpenguins::penguins,
+        mapping = aes(x = bill_depth_mm,
+                      y = bill_length_mm,
+                      color = species)) +
+   geom_point()
+```
+]
+.pull-right[
+```{r not-named-args, eval = FALSE}
+ggplot(penguins,
+        aes(x = bill_depth_mm,
+            y = bill_length_mm,
+            color = species)) +
+   geom_point()
+```
+]

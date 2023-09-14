@@ -11,3 +11,7 @@
 
 /.quarto/
 _site
+
+*_files
+
+*.html
